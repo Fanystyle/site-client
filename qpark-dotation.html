@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q-Park · Dotation textile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --noir:#111111;
+  --rouge:#E2001A;
+  --blanc:#FFFFFF;
+  --gris-clair:#F4F4F4;
+  --gris:#8A8A8A;
+  --trait:#E3E3E3;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;color:var(--noir);background:var(--blanc);-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer}
+img{max-width:100%;display:block}
+.hidden{display:none!important}
+
+/* ---------- Barre haute ---------- */
+header{
+  position:sticky;top:0;z-index:50;background:var(--blanc);
+  border-bottom:1px solid var(--trait);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 28px;
+}
+.brand{display:flex;align-items:center;gap:14px;cursor:pointer}
+.brand img{height:34px}
+.brand .ctx{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--gris);border-left:1px solid var(--trait);padding-left:14px}
+.hdr-actions{display:flex;align-items:center;gap:10px}
+.btn-ghost{
+  background:none;border:1px solid var(--noir);color:var(--noir);
+  padding:9px 18px;font-size:14px;font-weight:500;letter-spacing:.04em;
+  transition:background .15s,color .15s;
+}
+.btn-ghost:hover{background:var(--noir);color:var(--blanc)}
+.btn-panier{
+  position:relative;background:var(--noir);color:var(--blanc);border:1px solid var(--noir);
+  padding:9px 18px;font-size:14px;font-weight:500;letter-spacing:.04em;
+  display:flex;align-items:center;gap:8px;transition:background .15s;
+}
+.btn-panier:hover{background:var(--rouge);border-color:var(--rouge)}
+.badge{
+  background:var(--rouge);color:var(--blanc);font-size:12px;font-weight:600;
+  min-width:20px;height:20px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px;
+}
+
+/* ---------- Accueil double entité ---------- */
+.accueil{min-height:calc(100vh - 64px);display:flex;flex-direction:column}
+.accueil-titre{text-align:center;padding:54px 20px 30px}
+.accueil-titre .sur{font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:var(--rouge);font-weight:600;margin-bottom:12px}
+.accueil-titre h1{font-size:clamp(26px,4vw,42px);font-weight:600;letter-spacing:-.01em}
+.split{flex:1;display:grid;grid-template-columns:1fr 1fr;position:relative}
+.entite{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;
+  padding:60px 40px;background:var(--blanc);border:none;
+  position:relative;overflow:hidden;transition:background .25s;
+}
+.entite + .entite{border-left:1px solid var(--trait)}
+.entite img{max-height:120px;width:auto;max-width:78%;object-fit:contain;position:relative;z-index:2;transition:transform .3s}
+.entite .lib{position:relative;z-index:2;text-align:center}
+.entite .lib .nom{font-size:20px;font-weight:600;letter-spacing:.02em}
+.entite .lib .desc{font-size:15px;color:var(--gris);margin-top:6px}
+.entite .acceder{
+  position:relative;z-index:2;display:inline-flex;align-items:center;gap:10px;
+  font-size:14px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--noir);border-bottom:2px solid var(--rouge);padding-bottom:4px;
+  transition:gap .2s;
+}
+.entite::after{ /* parallélogramme rouge signature */
+  content:"";position:absolute;bottom:-40px;right:-60px;width:220px;height:90px;
+  background:var(--rouge);transform:skewX(-35deg);opacity:0;transition:opacity .3s,transform .3s;
+}
+.entite:hover{background:var(--gris-clair)}
+.entite:hover img{transform:scale(1.04)}
+.entite:hover::after{opacity:1;transform:skewX(-35deg) translateX(-20px)}
+.entite:hover .acceder{gap:16px}
+@media(prefers-reduced-motion:reduce){.entite img,.entite::after,.entite .acceder{transition:none}}
+
+/* ---------- Catalogue ---------- */
+.page{max-width:1180px;margin:0 auto;padding:40px 28px 90px}
+.fil{font-size:13px;color:var(--gris);letter-spacing:.05em;margin-bottom:8px}
+.fil a{color:var(--gris);text-decoration:none;cursor:pointer}
+.fil a:hover{color:var(--noir)}
+.page-titre{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:34px;border-bottom:3px solid var(--noir);padding-bottom:18px}
+.page-titre h2{font-size:clamp(24px,3.2vw,34px);font-weight:600}
+.page-titre .nb{font-size:14px;color:var(--gris)}
+.grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:26px}
+.carte{
+  border:1px solid var(--trait);background:var(--blanc);text-align:left;
+  display:flex;flex-direction:column;transition:border-color .15s,box-shadow .15s;padding:0;
+}
+.carte:hover{border-color:var(--noir);box-shadow:0 6px 22px rgba(0,0,0,.07)}
+.carte .visu{background:var(--gris-clair);aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;padding:26px}
+.carte .visu svg{width:100%;height:100%}
+.carte .infos{padding:16px 18px 20px;display:flex;flex-direction:column;gap:4px}
+.carte .cat{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--rouge);font-weight:600}
+.carte .nom{font-size:17px;font-weight:600}
+.carte .tailles{font-size:13px;color:var(--gris)}
+
+/* ---------- Fiche produit ---------- */
+.fiche{display:grid;grid-template-columns:1fr 1fr;gap:54px;align-items:start}
+.fiche .visu{background:var(--gris-clair);aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;padding:56px;position:sticky;top:90px}
+.fiche .visu svg{width:100%;height:100%}
+.fiche .cat{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--rouge);font-weight:600;margin-bottom:8px}
+.fiche h2{font-size:clamp(26px,3vw,36px);font-weight:600;margin-bottom:14px}
+.fiche .desc{font-size:16px;line-height:1.65;color:#3c3c3c;margin-bottom:28px}
+.fiche .spec{border-top:1px solid var(--trait);padding:12px 0;display:flex;gap:14px;font-size:14px}
+.fiche .spec dt{width:130px;color:var(--gris);flex-shrink:0}
+.fiche .spec dd{font-weight:500}
+.choix{margin:28px 0}
+.choix .lab{font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;margin-bottom:10px;display:flex;gap:8px}
+.choix .lab .val{color:var(--rouge)}
+.tailles-grp{display:flex;flex-wrap:wrap;gap:8px}
+.t-btn{
+  border:1px solid var(--trait);background:var(--blanc);min-width:48px;padding:10px 12px;
+  font-size:14px;font-weight:500;transition:all .12s;
+}
+.t-btn:hover{border-color:var(--noir)}
+.t-btn.actif{background:var(--noir);color:var(--blanc);border-color:var(--noir)}
+.qte{display:flex;align-items:center;border:1px solid var(--trait);width:fit-content}
+.qte button{background:none;border:none;width:42px;height:44px;font-size:20px;line-height:1}
+.qte button:hover{background:var(--gris-clair)}
+.qte input{width:54px;height:44px;border:none;border-left:1px solid var(--trait);border-right:1px solid var(--trait);text-align:center;font-family:inherit;font-size:16px;font-weight:600}
+.qte input:focus{outline:2px solid var(--noir);outline-offset:-2px}
+.btn-add{
+  width:100%;background:var(--rouge);color:var(--blanc);border:none;padding:17px;
+  font-size:15px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-top:6px;
+  transition:background .15s;
+}
+.btn-add:hover{background:#b80015}
+.btn-add:disabled{background:#ccc;cursor:not-allowed}
+.alerte-taille{color:var(--rouge);font-size:13px;margin-top:8px;min-height:18px}
+.ajoute-ok{
+  margin-top:14px;background:var(--gris-clair);border-left:3px solid var(--rouge);
+  padding:12px 16px;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:10px;
+}
+.ajoute-ok a{color:var(--noir);font-weight:600;cursor:pointer;text-decoration:underline}
+
+/* ---------- Panier ---------- */
+.panier-wrap{display:grid;grid-template-columns:1.4fr 1fr;gap:50px;align-items:start}
+.lignes{display:flex;flex-direction:column}
+.ligne{display:grid;grid-template-columns:86px 1fr auto;gap:18px;padding:18px 0;border-bottom:1px solid var(--trait);align-items:center}
+.ligne .mini{background:var(--gris-clair);width:86px;height:86px;display:flex;align-items:center;justify-content:center;padding:12px}
+.ligne .mini svg{width:100%;height:100%}
+.ligne .nom{font-weight:600;font-size:16px}
+.ligne .detail{font-size:13px;color:var(--gris);margin-top:2px}
+.ligne .actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.ligne .qte{transform:scale(.85);transform-origin:right}
+.suppr{background:none;border:none;color:var(--gris);font-size:13px;text-decoration:underline}
+.suppr:hover{color:var(--rouge)}
+.panier-vide{text-align:center;padding:80px 20px;color:var(--gris)}
+.panier-vide .p-icone{font-size:46px;margin-bottom:10px}
+.recap{border:1px solid var(--trait);padding:28px}
+.recap h3{font-size:18px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px;padding-bottom:14px;border-bottom:3px solid var(--noir)}
+.recap .note{font-size:13px;color:var(--gris);margin:10px 0 18px;line-height:1.5}
+.champ{margin-bottom:14px}
+.champ label{display:block;font-size:13px;font-weight:600;letter-spacing:.06em;margin-bottom:5px}
+.champ label .req{color:var(--rouge)}
+.champ input,.champ select,.champ textarea{
+  width:100%;border:1px solid var(--trait);padding:11px 12px;font-family:inherit;font-size:14px;background:var(--blanc);
+}
+.champ input:focus,.champ select:focus,.champ textarea:focus{outline:2px solid var(--noir);outline-offset:-1px}
+.champ textarea{resize:vertical;min-height:80px}
+.deux-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn-valider{
+  width:100%;background:var(--noir);color:var(--blanc);border:none;padding:16px;
+  font-size:15px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-top:8px;transition:background .15s;
+}
+.btn-valider:hover{background:var(--rouge)}
+.err-form{color:var(--rouge);font-size:13px;margin-top:10px;min-height:18px}
+
+/* ---------- Confirmation ---------- */
+.confirm{max-width:640px;margin:0 auto;text-align:center;padding:70px 20px}
+.confirm .coche{
+  width:74px;height:74px;border-radius:50%;background:var(--rouge);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 24px;
+}
+.confirm h2{font-size:30px;font-weight:600;margin-bottom:12px}
+.confirm p{color:var(--gris);font-size:16px;line-height:1.6;margin-bottom:8px}
+.confirm .ref{font-weight:600;color:var(--noir);font-size:18px;margin:18px 0 30px;letter-spacing:.08em}
+.recap-final{text-align:left;border:1px solid var(--trait);padding:22px;margin-bottom:30px;font-size:14px}
+.recap-final h4{font-size:13px;letter-spacing:.15em;text-transform:uppercase;color:var(--rouge);margin-bottom:12px}
+.recap-final .rf-ligne{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--trait)}
+.recap-final .rf-ligne:last-child{border-bottom:none}
+
+footer{
+  border-top:1px solid var(--trait);padding:26px 28px;display:flex;justify-content:space-between;
+  align-items:center;flex-wrap:wrap;gap:10px;font-size:13px;color:var(--gris);
+}
+footer .slash{display:inline-block;width:26px;height:11px;background:var(--rouge);transform:skewX(-35deg);margin-right:10px;vertical-align:middle}
+
+@media(max-width:860px){
+  .split{grid-template-columns:1fr}
+  .entite + .entite{border-left:none;border-top:1px solid var(--trait)}
+  .fiche{grid-template-columns:1fr}
+  .fiche .visu{position:static}
+  .panier-wrap{grid-template-columns:1fr}
+  header{padding:12px 16px}
+  .brand .ctx{display:none}
+  .page{padding:28px 16px 70px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand" onclick="aller('accueil')" title="Retour à l'accueil">
+    <img src="data:image/png;base64,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" alt="Q-Park">
+    <span class="ctx" id="ctx-entite">Dotation textile</span>
+  </div>
+  <div class="hdr-actions">
+    <button class="btn-ghost" id="btn-cat" onclick="retourCatalogue()" style="display:none">← Catalogue</button>
+    <button class="btn-panier" onclick="aller('panier')">
+      Panier <span class="badge" id="badge">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- ================= ACCUEIL ================= -->
+<main id="vue-accueil" class="accueil">
+  <div class="accueil-titre">
+    <div class="sur">Portail de commande</div>
+    <h1>Sélectionnez votre entité</h1>
+  </div>
+  <div class="split">
+    <button class="entite" onclick="ouvrirEntite('qpark')">
+      <img src="data:image/png;base64,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" alt="Q-Park — Parcs de stationnement">
+      <span class="lib">
+        <span class="nom">Q-Park</span>
+        <span class="desc" style="display:block">Équipes des parcs de stationnement</span>
+      </span>
+      <span class="acceder">Accéder à la collection <span aria-hidden="true">→</span></span>
+    </button>
+    <button class="entite" onclick="ouvrirEntite('voirie')">
+      <img src="data:image/png;base64,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" alt="Agent de contrôle du stationnement payant sur voirie">
+      <span class="lib">
+        <span class="nom">Q-Park Voirie</span>
+        <span class="desc" style="display:block">Agents de contrôle du stationnement payant sur voirie</span>
+      </span>
+      <span class="acceder">Accéder à la collection <span aria-hidden="true">→</span></span>
+    </button>
+  </div>
+</main>
+
+<!-- ================= CATALOGUE ================= -->
+<main id="vue-catalogue" class="page hidden">
+  <div class="fil"><a onclick="aller('accueil')">Accueil</a> / <span id="fil-entite"></span></div>
+  <div class="page-titre">
+    <h2 id="cat-titre"></h2>
+    <span class="nb" id="cat-nb"></span>
+  </div>
+  <div class="grille" id="grille"></div>
+</main>
+
+<!-- ================= FICHE PRODUIT ================= -->
+<main id="vue-produit" class="page hidden">
+  <div class="fil"><a onclick="aller('accueil')">Accueil</a> / <a onclick="retourCatalogue()" id="fil-cat"></a> / <span id="fil-prod"></span></div>
+  <div class="fiche" id="fiche"></div>
+</main>
+
+<!-- ================= PANIER ================= -->
+<main id="vue-panier" class="page hidden">
+  <div class="fil"><a onclick="aller('accueil')">Accueil</a> / Panier</div>
+  <div class="page-titre"><h2>Votre panier</h2><span class="nb" id="panier-nb"></span></div>
+  <div id="panier-contenu"></div>
+</main>
+
+<!-- ================= CONFIRMATION ================= -->
+<main id="vue-confirm" class="page hidden">
+  <div class="confirm" id="confirm-bloc"></div>
+</main>
+
+<footer>
+  <span><span class="slash"></span>Q-Park France — Portail interne de dotation textile</span>
+  <span>Besoin d'aide ? Contactez votre responsable d'exploitation.</span>
+</footer>
+
+<script>
+/* ============================================================
+   VISUELS PRODUITS (SVG vectoriels — remplaçables par des photos)
+   ============================================================ */
+const SVG = {
+  polo:(c)=>`<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M60 50 L85 38 Q100 50 115 38 L140 50 L165 75 L150 95 L140 85 L140 165 L60 165 L60 85 L50 95 L35 75 Z" fill="${c}" stroke="#111" stroke-width="3" stroke-linejoin="round"/><path d="M85 38 Q100 50 115 38 L110 60 L100 72 L90 60 Z" fill="#fff" stroke="#111" stroke-width="2.5" stroke-linejoin="round"/><line x1="100" y1="72" x2="100" y2="92" stroke="#111" stroke-width="2.5"/><circle cx="100" cy="80" r="1.8" fill="#111"/><circle cx="100" cy="88" r="1.8" fill="#111"/></svg>`,
+  tshirt:(c)=>`<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M60 50 L88 38 Q100 52 112 38 L140 50 L165 75 L150 95 L140 85 L140 165 L60 165 L60 85 L50 95 L35 75 Z" fill="${c}" stroke="#111" stroke-width="3" stroke-linejoin="round"/></svg>`,
+  chemise:(c)=>`<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M60 50 L88 40 L100 55 L112 40 L140 50 L165 78 L148 95 L140 86 L140 165 L60 165 L60 86 L52 95 L35 78 Z" fill="${c}" stroke="#111" stroke-width="3" stroke-linejoin="round"/><path d="M88 40 L100 55 L94 62 L84 48 Z M112 40 L100 55 L106 62 L116 48 Z" fill="#fff" stroke="#111" stroke-width="2"/><line x1="100" y1="55" x2="100" y2="160" stroke="#111" stroke-width="2"/><circle cx="100" cy="75" r="1.8" fill="#111"/><circle cx="100" cy="95" r="1.8" fill="#111"/><circle cx="100" cy="115" r="1.8" fill="#111"/><rect x="68" y="80" width="18" height="16" fill="none" stroke="#111" stroke-width="2"/></svg>`,
+  pull:(c)=>`<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M58 52 L90 40 Q100 48 110 40 L142 52 L168 80 L152 98 L142 88 L142 165 L58 165 L58 88 L48 98 L32 80 Z" fill="${c}" stroke="#111" stroke-width="3" stroke-linejoin="round"/><path d="M88 40 Q100 56 112 40" fill="none" stroke="#111" stroke-width="3"/><line x1="58" y1="152" x2="142" y2="152" stroke="#111" stroke-width="2.5"/><path d="M62 152 v13 M70 152 v13 M78 152 v13 M86 152 v13 M94 152 v13 M102 152 v13 M110 152 v13 M118 152 v13 M126 152 v13 M134 152 v13" stroke="#111" stroke-width="1.4"/></svg>`,
+  softshell:(c)=>`<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M58 52 L88 38 L100 46 L112 38 L142 52 L168 82 L150 100 L142 90 L142 165 L58 165 L58 90 L50 100 L32 82 Z" fill="${c}" stroke="#111" stroke-width="3" stroke-linejoin="round"/><path d="M88 38 L100 46 L112 38 L112 50 L100 58 L88 50 Z" fill="#111"/><line x1="100" y1="58" x2="100" y2="160" stroke="#111" stroke-width="3"/><line x1="70" y1="100" x2="82" y2="100" stroke="#111" stroke-width="2.5"/><line x1="118" y1="100" x2="130" y2="100" stroke="#111" stroke-width="2.5"/><path d="M100 70 l4 4 M100 80 l4 4 M100 90 l4 4" stroke="#E2001A" stroke-width="2"/></svg>`,
+  parka:(c)=>`<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M55 58 L86 38 Q100 30 114 38 L145 58 L172 95 L152 110 L145 98 L145 172 L55 172 L55 98 L48 110 L28 95 Z" fill="${c}" stroke="#111" stroke-width="3" stroke-linejoin="round"/><path d="M86 38 Q100 30 114 38 L110 52 Q100 46 90 52 Z" fill="#fff" stroke="#111" stroke-width="2.5"/><line x1="100" y1="50" x2="100" y2="168" stroke="#111" stroke-width="3"/><rect x="64" y="120" width="22" height="26" fill="none" stroke="#111" stroke-width="2.5"/><rect x="114" y="120" width="22" height="26" fill="none" stroke="#111" stroke-width="2.5"/><rect x="55" y="86" width="90" height="10" fill="#F4F4F4" stroke="#111" stroke-width="2"/></svg>`,
+  pantalon:(c)=>`<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M68 38 L132 38 L138 90 L142 168 L110 168 L102 95 L98 95 L90 168 L58 168 L62 90 Z" fill="${c}" stroke="#111" stroke-width="3" stroke-linejoin="round"/><line x1="68" y1="52" x2="132" y2="52" stroke="#111" stroke-width="2.5"/><rect x="72" y="60" width="16" height="18" fill="none" stroke="#111" stroke-width="2"/><rect x="112" y="60" width="16" height="18" fill="none" stroke="#111" stroke-width="2"/><rect x="106" y="100" width="18" height="20" fill="none" stroke="#111" stroke-width="2"/></svg>`,
+  casquette:(c)=>`<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M50 110 Q50 58 100 58 Q150 58 150 110 Z" fill="${c}" stroke="#111" stroke-width="3" stroke-linejoin="round"/><path d="M48 110 L152 110 Q170 110 178 122 Q150 132 100 132 Q70 132 48 124 Z" fill="${c}" stroke="#111" stroke-width="3" stroke-linejoin="round"/><path d="M100 58 L100 110" stroke="#111" stroke-width="2"/><path d="M68 70 Q84 60 100 60 M132 70 Q116 60 100 60" fill="none" stroke="#111" stroke-width="1.6"/><circle cx="100" cy="58" r="4" fill="#111"/></svg>`,
+  giletHV:()=>`<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M66 46 L90 36 Q100 46 110 36 L134 46 L140 80 L140 165 L60 165 L60 80 Z" fill="#FFE000" stroke="#111" stroke-width="3" stroke-linejoin="round"/><rect x="60" y="95" width="80" height="14" fill="#cfcfcf" stroke="#111" stroke-width="1.6"/><rect x="60" y="125" width="80" height="14" fill="#cfcfcf" stroke="#111" stroke-width="1.6"/><path d="M74 46 L74 165 M126 46 L126 165" stroke="#cfcfcf" stroke-width="10"/><path d="M74 46 L74 165 M126 46 L126 165" stroke="#111" stroke-width="1.2" fill="none"/><line x1="100" y1="50" x2="100" y2="160" stroke="#111" stroke-width="2.4"/></svg>`,
+  blouson:(c)=>`<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M56 56 L88 40 Q100 48 112 40 L144 56 L170 88 L152 104 L144 94 L144 158 L56 158 L56 94 L48 104 L30 88 Z" fill="${c}" stroke="#111" stroke-width="3" stroke-linejoin="round"/><path d="M88 40 Q100 48 112 40 L116 54 L100 64 L84 54 Z" fill="#fff" stroke="#111" stroke-width="2.5"/><line x1="100" y1="64" x2="100" y2="152" stroke="#111" stroke-width="3"/><rect x="56" y="146" width="88" height="12" fill="#F4F4F4" stroke="#111" stroke-width="2"/><rect x="56" y="84" width="88" height="9" fill="#E2001A"/><line x1="66" y1="108" x2="82" y2="108" stroke="#111" stroke-width="2.5"/><line x1="118" y1="108" x2="134" y2="108" stroke="#111" stroke-width="2.5"/></svg>`,
+  polaire:(c)=>`<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M58 52 L90 40 Q100 48 110 40 L142 52 L168 82 L151 99 L142 89 L142 162 L58 162 L58 89 L49 99 L32 82 Z" fill="${c}" stroke="#111" stroke-width="3" stroke-linejoin="round"/><path d="M90 40 Q100 48 110 40 L110 50 Q100 56 90 50 Z" fill="#111"/><line x1="100" y1="56" x2="100" y2="156" stroke="#111" stroke-width="3"/><path d="M64 70 q6 5 0 10 q-6 5 0 10 M76 64 q6 5 0 10 q-6 5 0 10 M124 64 q6 5 0 10 q-6 5 0 10 M136 70 q6 5 0 10 q-6 5 0 10" fill="none" stroke="#111" stroke-width="1.2" opacity=".45"/></svg>`,
+  bonnet:(c)=>`<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M54 128 Q54 60 100 60 Q146 60 146 128 Z" fill="${c}" stroke="#111" stroke-width="3" stroke-linejoin="round"/><rect x="50" y="124" width="100" height="24" rx="4" fill="${c}" stroke="#111" stroke-width="3"/><path d="M58 124 v24 M68 124 v24 M78 124 v24 M88 124 v24 M98 124 v24 M108 124 v24 M118 124 v24 M128 124 v24 M138 124 v24" stroke="#111" stroke-width="1.4"/><circle cx="100" cy="56" r="9" fill="${c}" stroke="#111" stroke-width="3"/></svg>`,
+  cravate:(c)=>`<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M88 42 L112 42 L104 62 L96 62 Z" fill="${c}" stroke="#111" stroke-width="3" stroke-linejoin="round"/><path d="M96 62 L104 62 L114 130 L100 158 L86 130 Z" fill="${c}" stroke="#111" stroke-width="3" stroke-linejoin="round"/><line x1="92" y1="84" x2="109" y2="76" stroke="#E2001A" stroke-width="4"/><line x1="94" y1="102" x2="111" y2="94" stroke="#E2001A" stroke-width="4"/></svg>`,
+};
+
+/* ============================================================
+   CATALOGUES PAR ENTITÉ
+   ============================================================ */
+const TAILLES_STD = ["XS","S","M","L","XL","2XL","3XL"];
+const TAILLES_PANT = ["36","38","40","42","44","46","48","50","52"];
+const TU = ["Taille unique"];
+
+const ENTITES = {
+  qpark: {
+    nom: "Q-Park",
+    sousTitre: "Collection textile — Parcs de stationnement",
+    logo: "data:image/png;base64,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",
+    produits: [
+      {id:"qp-polo", cat:"Haut", nom:"Polo manches courtes", svg:SVG.polo("#3a3a3a"),
+       desc:"Polo piqué 100 % coton peigné 210 g/m², coloris anthracite. Logo Q-Park brodé côté cœur. Col côtelé renforcé, patte 3 boutons ton sur ton.",
+       matiere:"100 % coton piqué 210 g/m²", entretien:"Lavage 40 °C", tailles:TAILLES_STD},
+      {id:"qp-polo-ml", cat:"Haut", nom:"Polo manches longues", svg:SVG.polo("#23262b"),
+       desc:"Polo manches longues pour la mi-saison, coloris noir. Logo Q-Park brodé poitrine. Poignets côtelés, coupe droite confortable.",
+       matiere:"95 % coton / 5 % élasthanne", entretien:"Lavage 40 °C", tailles:TAILLES_STD},
+      {id:"qp-chemise", cat:"Haut", nom:"Chemise d'accueil", svg:SVG.chemise("#eef1f5"),
+       desc:"Chemise blanche easy-care pour les équipes d'accueil et l'encadrement. Poche poitrine, logo brodé discret ton sur ton.",
+       matiere:"65 % polyester / 35 % coton", entretien:"Lavage 40 °C — repassage facile", tailles:TAILLES_STD},
+      {id:"qp-pull", cat:"Haut", nom:"Pull col rond", svg:SVG.pull("#2b2f36"),
+       desc:"Pull fine maille col rond, coloris marine. Renforts coudes, bas de manches et taille côtelés. Logo brodé poitrine.",
+       matiere:"50 % laine / 50 % acrylique", entretien:"Lavage 30 °C délicat", tailles:TAILLES_STD},
+      {id:"qp-softshell", cat:"Veste", nom:"Veste softshell", svg:SVG.softshell("#1c1e22"),
+       desc:"Veste softshell 3 couches déperlante et respirante, coloris noir, zips contrastés rouges. Logo Q-Park brodé poitrine et marquage dos.",
+       matiere:"96 % polyester / 4 % élasthanne — membrane TPU", entretien:"Lavage 30 °C", tailles:TAILLES_STD},
+      {id:"qp-parka", cat:"Veste", nom:"Parka hiver matelassée", svg:SVG.parka("#15171a"),
+       desc:"Parka grand froid doublée, capuche amovible, bande rétroréfléchissante poitrine. Multiples poches dont poche badge.",
+       matiere:"Oxford polyester 300D enduit PU", entretien:"Lavage 30 °C", tailles:TAILLES_STD},
+      {id:"qp-pantalon", cat:"Bas", nom:"Pantalon de service", svg:SVG.pantalon("#2b2f36"),
+       desc:"Pantalon de service coupe droite, coloris marine. Ceinture semi-élastiquée, poche mètre latérale, genoux renforcés.",
+       matiere:"65 % polyester / 35 % coton 245 g/m²", entretien:"Lavage 60 °C", tailles:TAILLES_PANT},
+      {id:"qp-casquette", cat:"Accessoire", nom:"Casquette brodée", svg:SVG.casquette("#1c1e22"),
+       desc:"Casquette 6 panneaux noire, visière préformée, logo Q-Park brodé face avant. Bande anti-transpiration, réglage arrière métal.",
+       matiere:"100 % coton brossé", entretien:"Lavage main", tailles:TU},
+      {id:"qp-cravate", cat:"Accessoire", nom:"Cravate corporate", svg:SVG.cravate("#23262b"),
+       desc:"Cravate corporate marine à fines rayures rouges Q-Park. Réservée aux équipes d'accueil et à l'encadrement.",
+       matiere:"100 % polyester microfibre", entretien:"Nettoyage à sec", tailles:TU},
+    ]
+  },
+  voirie: {
+    nom: "Q-Park Voirie",
+    sousTitre: "Collection textile — Agents de contrôle du stationnement payant sur voirie",
+    logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAggAAACsBAMAAADswEmBAAAAGFBMVEX///9JSksCAQMBAQQBAQMBAQIAAQIAAACydXnRAAAaOklEQVR42u2d/XsU15XnP7dEC7AAVQlLspERpfYiJsEBDLGzDmOHbNbJ80i8FE4aO+m1LfHS2X2y4wnMM+RvmNknI/+0+4DzWMzM6oehMTSC1jwJG0ISGBRjQFZGtjFxq4AIW5JRX8jINGpUtT9U9Yta/aIGoQhQ/SBVVd976t5vnXPuOefWuVesFuQ45AITW/IQHLOGV2T/QdQBcOY80QceBPG1+bl+igA8oxNvnXIYdt0o/+m9o/618ksXxnJC7rJegMEzLA0MHHoQpELL+S6VAjUVrzcevLpdm9r2msfNSadZEVDdM+sPVnEgAIo3HgrUTeQx3rpJarCu65Mu91uDzYkOKUrRIICiB7cU7p/Y7ts8fYWh6hAd+h2KQ0I/BLeoBQv9IRhWpysGit/23X5JvSsQ8B77YaEOlnZ70acrCEsP+362qb357kCg4lhzgRIq1HyzaFHVtHugdMcRra6Z9S/X2qwO9e5AoKKjgFoouyM2CASaJt/4CQS2Zo43jSYDRi6LceKka5b+Sz5zQRjdKB1FNziIPfmcMI7owO49YLf9oOUuOQElv0AIkwgUrRkN3Zh8EMYRtfdKYKCVuwUBb0e+LlZ248OarsNDFMjpDhYDAjX5deOlt1YtnsaWQh4eL6pwPlbw60rUKo7etHGliypd09CSUyVgrf8pytHUDZV0L1wj8zKrP5O/VqKEy9dpp4nS4zheqA4BLYs4JOoXB4LSoeYaIER7rUV4tCRRQNQbsN/chdUCULEDGGkBqDa6Lig7IP4PMPuvzyk9u+NJaJ1avclheQcw0pr+TFFvQPxtCWgBSJSu1rlwPeD8Ina9r/Ts5u/FLqw36w32SJeSUy2FWcC9VxwIxJvezKUXuRJBzq+55b6k+pogbNlrd60EqNgaBDw7WwB+WSJ2BKFyZwv2ObDeW5mkUt8YhFI15JgcYkcQ8DS3pGNQc0ziUSWIQBBUuWWPBLhWwu4gzGpuARus9+rA7lpZ2hh00AwCyg/3yHRrIihsPM0tlDwxuxgQyn+XyylfRMm12E2tfF2nY6KVVGhRPviBGXusE8SPQrZvef0X50ZjMG+2vfgMeD3nriFQoXfORwlOe629Lor1gz8sePw0sOz3+ovL6z+IjMZSpt+sitkSMRSDZVcWlcuY99T3TwPzZvP46Gd4558bjYlFt6BX9IrnPnvsiy48fYj/ecAbRdFPvdIJPHFTuQZUX3Soz5dFcoJSOZRdHsSG7isSe2PXJVdNthPxET+62HErDurP7KVq1HIYSV/Rs8o+qKNKRQdSfvPSdj3iI370hQhASWP3lV5Ztc5MaSLhb7f6fARVidLYbfX5RkPeI7oJsGT1YR/v6HG9iyXdLlHlg3XDavwCVe94Iz7iv/GmibPwd1/plaX+6wtaigSBsuYcRpdprb8AKD2qBAS65dtLVdz5dUX0T/ujyJ1dV5zrU4/sFU3dliqFbqLUJtvV2G359suquBNSefQ3VkMLMq70pbAOeS9v2EtVP1S2630Ne0te61680mnSgU17lab39ZVdjlFTDhAPj0gF/O3Wi/tlVWN3mmavaq9taIGwpahFigN2DnkojZVXd4L1qTIcA6pN9Y+/lrGh5n77sU7Eyzc/7QUisc9HY8ybveDq+djN/utLvtE5et749Cv/pzOB5ID6x19/Fhva/H7546fhO+LzkzH4olxJykPVnAW1B2Vs6DHJD29Zz7fEvojc1M6Oxpg3W/2Pk/JmZPbs2Ed0Gp+u+N+nEc/128//a+wm4rlbly/2xoaGouW/iybEYdmt/zgZg2i5KC12XFc8ag4X8sohwKSmCcDCbpBgtznv1GQTwOBGN661ERjGFuOUq9Ugwd5nAQjdapDAyMaUHVqGeU6CbSJM+lqBgY1YOuA8cLB2rDff1wpQ2m6N9oL98ca05q+rjUvANhYbRRs3NU05XEhFAhKEE6S9fAiniUDJDcehsVF0gL59wODGbMHFQwB2huW/2Eg6abonMQQr1pclYLeZi9cBzgPtDE82Ll0nfxOAHTKtNFfHuXfEFEWDIC5ldyGxnLfG+wBrHUxcZ26hqXR7vV5vXXfNupRgZQkt4nTRPmICAuV9pxYplrHWuyBUdrEE0nBXsmhsa1OCI34FwLD7FgB0h7rX1ou1E0B8kM1eUkxe+BzAVK6oEgE1Tmj/1ODKNPM84kxm5DrWdl9xaN8oAzztugKgROhN61eK1R1atzedL9RmdRRHLOX8mhVdCQvXaZNimeY4ENJa6c1K0dK7xt98tFu/FAA4C6oErKePO/xd5hR4co3zf6SlGMRLfPlqOYBZdxyPSFCPZ4Kg+NJDE9lgWLwyCwi1UQg6wNWszNbiY64MFNfieDCX5AC4b0PcIQaWFXQblQGC9ZW/SzojynbOXM4SMjOzEHy+23JuR7yuBnQ9KdWxFK4s6JpAsy67bJRszYrjubvgKCFQCuOqXkuOYUrK4WPl8UJeZBT+Xt2yqn0cCsoH2VxIPC4L/VJ1Q2yO0bT+PCDnLxicyLu5cq3EOVkOcHtj17iXbCqH3bMb5a6R9Gh7bSG6kXIrAe6Vz8fplvxepB3dW/VqaDwvjNeMs9prF+x1INp0GVVy6lrtLQkovQDxVUN/ORFdECl3LDqxqguwxrOcrXd73KfHV8jDrumgHCoYNHEAE/7uS2aWWEr+IdLu/6eN45qSJYRWAUui0Wg0Gr12AksFE1Y7ChPAtrgEoGzT8obfFJXDjkXrDmKHAcTfpGqdkE50S8XWHcNHGPoVWQCEQcsJB2mh1EBqoxxVAbGrTi1kJwy0jbNpsoTQFkDibQybizfDoKX01UHFf3OMOV3pUYGlJwN5w/KDQ8qsnaD5dde0QQeqjqai8n0oHXVQoWKbZs1WFVH/m8QwkeddGtQ0q4ititWQvNlm1jQDVeEtzQWNpYGwWdh22KD3ydS4pYBtMO/bf/O1HYeSD9yqadWNNaGuAo19omPXk4GQiyf6y5pW4a85sS8J0wvUbNm1bIeEUyjhH67e3ajaDQUdnrCpdGxbs/ugbqa06JCldGhahb/seGtBY8n+eNf7GUx7KYuplHwbtzd2HwW7bb5+zLMh6DvrtN3fHQ4Qb7c2Xcj7rLYyb034u0GPWQsw4G83A/BO7dd/lxTF8KgeXNoYVCUD/vbaoC+o1PadLfiWLv64u+bI5qDX8iTh5LbRXmvAO7WrzmR8qWJlGeSr52fw8JX+DP6rLsNOGHViZ4ghidgZ8lqm55Fvdq1sAZY5I+UzP5dQoTIkQdRh97p/SVX2WiabDiM+AaqXmwCetOcpPw55rcvWkITqxt/oEa91eUML2Ymm0V4WV2pNb8TT0AKslkSAan+7BXhumRPwHQY2Fizi8xkp1vP5msBu+17EnNWY4P6PfQbge1cClT5fWqW0qmDv80VMfK3uzYE+A/A1pGFutfkiprVUBQZOGREifRtbATwZRF8a26yPfRtNIj4nmuCW7Q8bwIsNJhPgBLzKWFa4MjdDssdEeRMB4oodxN++vtPhBMSz6xIxUTfQLFRsmRldpmIH7JGJWHRG3DVZwrklKpuTwVO3CS45p346bYdSVKZHukVls3NvIiBkyoO14s0JuVqqLUUCBNAm9j2gUMcU07IF0ZO3MgrnPbI9360/ES9ywN89zkCcSBAqOn4ibDJqpZWwi/iuLpr7YRMBwTYp9kgTkOIrT88ZqFPz9SLJljZx601nSmbJAwKCnF+sOAy6XmqleiUy/UGYUHgtPnaQVMKFJWiV17MKhF9V5AMCgj0+tlyohk7Nd55euLvdij8oINzB0RZRgt/eHtTNTTyonDCBYdWIeINBPeJrfVBAYAKeZCZu+3wW9Pn23wfSMMGQezJIN/Fj6K1nfMT33hfJEhMDwZxfPOWhn797v+SL3JlinJjtFL1fcmbuyw+tZkCYAWEGhBkQph8I5sMIgj7DCYWneB4KEBr1GRAEM5xQxKHNcAIioD+wIHjaJ6oog/KBBUHNuF6cs6TvwRWHjIxHa+VDqBhF5qcp1kMIQunhe96MCnW6g7DinrdCNG37c4IwgRijeD5jUnryE3uVkGeag1CV+UFn3x1PL4q6cR8nliwZkliGuHCPxS1yV+Ig/Prk+VO+7Lfsowfv7bv2eO6OE6raJ9EKvDj+1kGAj+8xw1vWXSnGivGMcBdzrN577r3k6KZyNyCIHe3jUL0f5lgnUzFqgaCXB/7IC4LQdmTD4NBDBIImKo1sGPRlVQlaHb3utJtmS0Co6dnv3qFeECpCsyUITbOiUiOKUPUBLepWAU1Z4lIRqi0rdOdCqFGh1UUS9LQKS7r37evakl6J0PTEw4VWN+R8rijUaOK+BlqeidGM5FBx65FFixYtWrTo8cdfW7Om5Hg2WbgxHMuiPwPeJ9f03Fp7NgZ/vaITmP2jnmQ55Y26p65KSv7q/DNrz8YQ9f7Hv7rydPnrp5n9P65uWNMTc6pQEVi9cO2znQCzf3S2fFvFX16VDqnybcq3rjpAVW/70lNr+iQg3rhmbyv5xoe36v0l33KeJur92ldXfhgDqredWub/U2NPDMpfvblh5emJgsDtr3u9Xq/X++STZ/7tg4Fs6+nYi7Nkn4m/OvwlRp/pWXM2Bp9+JAH76s0kCPUffSkeuYZ4tv/GnJ4Y1d8tmcufXjh3KcqsqtgjsVNuFeW/H/mLOfbR1zoB+mLbmBt3ksX7Rrainnn2kxigBI58ifiKnhiIq4+8hHrw5d45f6EGX+kEqP5W2VxCL3cCsyOlr/BY8PunYV50ziLr9ITFYTSYHM1yaEQ72zd5VQeMvVJr8oYADNv5hDgFUaP9d9Xqqi778NPnz4Dwh0eioj7q/cZPiUcWvtebqLI03LDnesXrYVUChmek9Xp9vOlNKPGuGWm9Xi9VCSw91bDner2Ts214RlpFc6isYY9oDjuWXXggqm37rSrBozS9e140h1VJXFy6lmdcH5crrSWOXDV6P5RZwmqfnJTcjCgMx+A5OgGxMCk24ol3Yl+8GgLZ0PNpjOrIhn+Nxa6+vkScxh4ouRJ1q5S8urQlxs1IySudoPznIyclQ/9F7YSSJe+elETnGJ0gXqttiTH0/cNREM8dOSljkbKSkzIWKbViUB1Z/CGxj6xXOmGe54PzsdgfZr3cyc3Ruf8u7zKoMtYCzUJNhBokMNCYY5Txgp36aLrM0wrYbaGMYo+GWwEGDMd1/7JMphBaDRIswwRKQwcBu81Jem6QMBh/SsLnq1WgzHMeGMIxbjYBnxuFI6RFg2DdzgJCpacVwP7nHCCMvTKcb/fHLYBV5piidlulCjhZwH1OA3sBwjqwwHkJgyuSEQjbqAWsGkBsdkgPPwrgYD1Z4bUxR7bsB921pG/kAO7imLWJ3BwcO4MThOGaooNDOuA5AWBKgD4TQApgvtNN20kit9NcewPoPeRSUIvx9ooGoS/bN3mDbvNvG9l1qZ6+bptYesI5Gc4oZrqJDfYGHZBmWh9SDriRzl6Kg2NXsjdLnc6Ll1JUuyYlnjD2pWb1ngw7f/Cxzd9jJHVCSag/60tSlv48yVnkmvkWfPATAII2UKKOpSPOVP8EIH5M7yrC5S+aE+7Ie+pvW96xc/wjZUa8ysyuRLJHJows8Y2Sy6sc5f1iUY5usZzQd447Q8EfVu/cA08/Htmbz9v5hXkHEcAiOcFqvMOe9LclF25LyYyawekTit64qbjZvw9Uet0f5T0EwcweBgtloZbB0gNmYq1Gy9CzgpCmbvK9x3yiEr+zIFhxINie7Oqq0p2ZmBXKKWj2cKLPVqKpZZlk3EkeceRE7haYedu3XL33IPTmyMg13UVr1HS+SBsq1LHXda5dkNk/N/W2siJPT3/r4r0re3cdHMXOeweC5cnx4b6Mq4774ujowwBpOS8LmyG18osdcgSjKtNsPtXjdKxsMJ+d7wyLwmzKyicORFUd6j0DYfhWjtaNbF4NUOXkBd3wqCD88eTP2w8DZcnr4XgdIMrWZZpc8WaAirzD8OcbmgGqevZl+/XUQh0Q/uJiwcWAYK3Nxab2yZ6dKpp/vdOZ5c0qVaFUV/Z56qgwktcDRr2GqPJk2nLWd/+tDrQmT75EkdGSjjqo8GcfpgZfeFlD1Ic2FiUOebY2GIdBX39OfJUfhw2pmr/QhiTwk5Ahy8Kp0mJneJM40W8mZqCqy3y2iNv/qH3izkDhtXuTVEINLSTuU5Eq404jKTuPbrpeFr5lgqhb0JWY1hpDmrdlctZpdbT37megUhg05OYxq80I9vLuDZ8K8L+MM8c8I6nSdtuGA6G1ZtLOG/DED0paPQYwy5ey/6w248wxGltJ3sfzvdT5UqfQ/zUO/NLTYEJiQsup7JJ+ZvRAyPO2JLnKy4tG6vyuOeHG2rzLomhVja3RRO6yVrl+7M4YC7/3i6hM5TYLbccveqXmZHXbklSgtXL9oUSY1Ja48VE3ZpuIlVYsXdsaTZVJlEyQ9h0bSgRak2HfMVHfOwbBMo23J8fsnYbHBMXB+uNLDy4GE3SgIp71P3twMZgQCJbpiz/AfDARECJ4fPujDzIGBUCIAPdNduPkgTD2c5oXVTgw9MDvhpUJwlir4oAlH4aN0XIuRfgwHTOJYDMgzIAwA8IMCDMgzIAwA8IMCDMgzIAwA8IMCDMgzIAwA8IMCDMgzIAwA8IMCM5Rnf6l0rK6hxIE4U/7UqmksYjdbGdNj/arkzHBE0o7t4tJQZ8enFAaUCeBis8nUyD4Gu43TogHJ4GI/ZadfmHdbyB4JmX5hKGcFzND5AwIMyDcbyDIP+fDM5JD7cc672ic1+bEFr6WSGYGbcn2q8S0uTG0uW6GqHOiLdn+qR3T5sZAaDGxbPsXnwHa3Nn23GROccUbpTLm0EzUE9qcR964SizxrLT/whv42kex1COEFqt446okUeo/7Uj8fK85QQSo3B49sMW1W5VA/Hz9VgJNUBVIlGgCRKDm0NKtan0TUBoQu43gt3cCpa8vCexIGr9NZ682AziL2ZUGnLI7gqUuxAEnhcYTUAGx2zgXCjgmcn0TUBXQmoJPJ0qJ3RvPhQoaIZPECVdjr5ecnV/TMRoDxO5fru/5esmzx7sksy7aMQDl6ocSlv3+xb4vl646bkqwr5aues9T0zEaY97KzxaJUy6t75yyvhMejSGuzv4MmB2JAn21+nKv27RPL0QBHo0MxRD1Hy7vmV/jpJVXd0mYHal9cvn8TjcFvfriV3o2xJ8+PSV2gtETHogK00njLg0ae+S5esqMFgbX1r4JUOnpB2W9vUeeq1L1b7SAR2na3ytkXO9i4B/V5NZmQl/S0rtjD+D7OYBHjwCGZ39v4n0OOycLRiWUxo09Uph+uwXwGC3gUdbtleVuCrrw9+2R5+px9iC/54rx4kgUe4AOFaitfFtif9yoArbu5CwtiEuoPHlQYg80Or2wgr3YF1etA/uGksrr6mslOn5DhP29Sd0pUQGxYRNQ43lbYveH01wnaySa/M6qKvQ7if1xIWdqskDwRAF7OK6C2LhIkthY2/7nDhJNFv5Bk9SO22wEbN3J+VFTnED6bnGJIy0PZKSxCVDMQ6m064vxppSA/ypVtMxjAvaRjqkBIZEDvhmUXmeFhcFVzgNUcHfNdvc+cTPFPScAe9zOpFkTE3pOpOktBDCrR4I44uRG22mp8UqK9YXheFGXC2xSM1kguI0xTZjlZuY4u30PLG8CSnskKJ5fub1wDhOgItMNWtychbyZLtRHDgMqEirdvCo73J21VW729YgxJZyQWFShry7F2U5WvKMUVEvCrC63K6fyNMAOd+wsMKTdqFRhbQOk1r2Sf8xaUn9f0zRNqzDVqRgdEprIHEq7qgSgTQX8dkua3Jtfz6difxzemv9z8sG1/VLoFsDmnyZuppKQZRrApY6ZEpxaszmdnplU5qKI3GVrnxFuzh840DcjjuwDVKuA1e3Kgc/4M8cTRhqtN0W4v4iwwFvbD+cd2O0TdVQqAAX2Abb/9J7JGDU0NSDE01izNqnMK5GAnGAMbehnTXbefKu+YcqeugCYTySEIbshW9Eri2XfuzhUd6DTjTTWfN7519ZB2ZchLU+4rBAKofwD+yCaUQtg/XteN9SyVKYQhPg65//aXohbDiIi2TzNWAIw6pqKwihEbthSk5hlmT+wGzXHQFASLFC2PCudT4x8jDLpitGx+4Spg73im85FKKEUnj6yzxEMN507ryWfbPAn6wD0LB2wQ0sdA2Ew7sK6eUl2Deq8CLF1aoylqypA1e8Pgb3EydpeqCaUkrskpN3lmPiVXXkIVSeTy3UBiLXZLMjhi8ulYymudnyEQ9lXBvyt88Cq8NRwwtpmQPgVCbSV1AFiqysitEWeciS2p6wZEK/lE4eaDhXKboMd6lBBhLK9Yymcu3ZbXx0g/J7sCrA77jRruZwKEEp+3VGnafXOwluDG57VNG337RNJPeaMEwys63ha0+qtE/k0f7xZq1i1ERiON2va36btCZ427G46lLCbtjytafUncmQwjxgddZpWHz43JfEE5ZPq0gDvfXUPgNW2PgChfm8oYbK4i5DYbX4PhN65EQXizlICt0Opc4CBneFAPHwcGNgdChDc1JIcedOEvcTttNXm/zYE/+tegHg6qZDtPDAcIGj8wxRZjB8b8FU3DjBwEhiRL7psXxlOvKeBMNBgLjVIZlt50s4B7H0GngYJ2G8ZYKRnj6eOfxpD0bdXjiPlGIn9bQYYbxcKjE1gc+0JMMLf7pFCK5fJ/bxVVaamWJ+5llRuQtUKbpunKVY0eZYjD01LEdGEnS9ZrcDPk2wx2kOpmS87vafi+ZT9Z09g58BolrPcZQptxziR6e4pmIsU5jmm9zEFky+VPXIGhNr4DAji+Wm/4vcU6IRprxKmgBOqpr1KmAIQrOm/vd69F4dX7QvTHgS5bkxwZNK3cxGTv0PM5IMw7/+NjWzdWU+P5f7pRGTag/D/AXGNJCz8U/xyAAAAAElFTkSuQmCC",
+    produits: [
+      {id:"vo-polo", cat:"Haut", nom:"Polo agent — manches courtes", svg:SVG.polo("#23262b"),
+       desc:"Polo noir réglementaire avec marquage « Agent de contrôle du stationnement payant sur voirie » dos et poitrine. Tissu respirant adapté au travail en extérieur.",
+       matiere:"Polyester/coton bird-eye respirant", entretien:"Lavage 40 °C", tailles:TAILLES_STD},
+      {id:"vo-polo-ml", cat:"Haut", nom:"Polo agent — manches longues", svg:SVG.polo("#1c1e22"),
+       desc:"Version manches longues du polo agent pour la mi-saison. Marquages réglementaires identiques, poignets côtelés.",
+       matiere:"Polyester/coton bird-eye respirant", entretien:"Lavage 40 °C", tailles:TAILLES_STD},
+      {id:"vo-polaire", cat:"Haut", nom:"Polaire zippée", svg:SVG.polaire("#2b2f36"),
+       desc:"Polaire 280 g/m² zippée, coloris marine, marquage dos. Coupe ajustée pour passer sous le blouson ou la parka.",
+       matiere:"100 % polyester micro-polaire 280 g/m²", entretien:"Lavage 30 °C", tailles:TAILLES_STD},
+      {id:"vo-blouson", cat:"Veste", nom:"Blouson d'intervention", svg:SVG.blouson("#1c1e22"),
+       desc:"Blouson d'intervention déperlant avec bande rétroréfléchissante poitrine, marquages réglementaires dos et poitrine, poche radio et porte-badge.",
+       matiere:"Polyester ripstop enduit PU", entretien:"Lavage 30 °C", tailles:TAILLES_STD},
+      {id:"vo-parka", cat:"Veste", nom:"Parka haute protection", svg:SVG.parka("#15171a"),
+       desc:"Parka hiver imperméable coutures étanchées, doublure amovible, capuche fixe, bandes rétroréfléchissantes. Marquages réglementaires.",
+       matiere:"Oxford 300D — membrane imper-respirante", entretien:"Lavage 30 °C", tailles:TAILLES_STD},
+      {id:"vo-gilet", cat:"Sécurité", nom:"Gilet haute visibilité", svg:SVG.giletHV(),
+       desc:"Gilet haute visibilité jaune fluo certifié EN ISO 20471 classe 2, bandes rétroréfléchissantes, marquage « Agent de contrôle » dos.",
+       matiere:"100 % polyester fluo — EN ISO 20471", entretien:"Lavage 40 °C — 25 cycles max", tailles:["M/L","XL/2XL","3XL"]},
+      {id:"vo-pantalon", cat:"Bas", nom:"Pantalon de terrain", svg:SVG.pantalon("#23262b"),
+       desc:"Pantalon de terrain renforcé, coloris noir, poches cargo, passants larges pour ceinturon d'équipement. Entrejambe soufflet pour l'aisance de marche.",
+       matiere:"Polycoton stretch 250 g/m² Cordura®", entretien:"Lavage 60 °C", tailles:TAILLES_PANT},
+      {id:"vo-casquette", cat:"Accessoire", nom:"Casquette agent", svg:SVG.casquette("#15171a"),
+       desc:"Casquette noire avec marquage brodé « Agent de contrôle » face avant. Visière préformée, réglage arrière.",
+       matiere:"100 % coton brossé", entretien:"Lavage main", tailles:TU},
+      {id:"vo-bonnet", cat:"Accessoire", nom:"Bonnet hiver", svg:SVG.bonnet("#2b2f36"),
+       desc:"Bonnet maille double épaisseur, coloris marine, marquage brodé. Indispensable pour les tournées hivernales.",
+       matiere:"100 % acrylique doublé polaire", entretien:"Lavage 30 °C", tailles:TU},
+    ]
+  }
+};
+
+/* ============================================================
+   ÉTAT + NAVIGATION
+   ============================================================ */
+let entiteActive = null;
+let produitActif = null;
+let panier = []; // {pid, entite, nom, taille, qte, svg}
+
+const $ = id => document.getElementById(id);
+const VUES = ["accueil","catalogue","produit","panier","confirm"];
+
+function aller(vue){
+  VUES.forEach(v => $("vue-"+v).classList.toggle("hidden", v!==vue));
+  $("btn-cat").style.display = (vue==="produit"||vue==="panier") && entiteActive ? "" : "none";
+  if(vue==="panier") rendrePanier();
+  window.scrollTo({top:0});
+}
+function ouvrirEntite(cle){
+  entiteActive = cle;
+  const e = ENTITES[cle];
+  $("ctx-entite").textContent = e.nom;
+  $("fil-entite").textContent = e.nom;
+  $("cat-titre").textContent = e.sousTitre;
+  $("cat-nb").textContent = e.produits.length + " articles";
+  $("grille").innerHTML = e.produits.map(p => `
+    <button class="carte" onclick="ouvrirProduit('${p.id}')">
+      <span class="visu">${p.svg}</span>
+      <span class="infos">
+        <span class="cat">${p.cat}</span>
+        <span class="nom">${p.nom}</span>
+        <span class="tailles">${p.tailles.length>1 ? p.tailles[0]+" → "+p.tailles[p.tailles.length-1] : p.tailles[0]}</span>
+      </span>
+    </button>`).join("");
+  aller("catalogue");
+}
+function retourCatalogue(){ if(entiteActive){ ouvrirEntite(entiteActive); } else { aller("accueil"); } }
+
+/* ============================================================
+   FICHE PRODUIT
+   ============================================================ */
+let selTaille = null, selQte = 1;
+
+function ouvrirProduit(pid){
+  const e = ENTITES[entiteActive];
+  const p = e.produits.find(x=>x.id===pid);
+  produitActif = p; selTaille = p.tailles.length===1 ? p.tailles[0] : null; selQte = 1;
+  $("fil-cat").textContent = e.nom;
+  $("fil-prod").textContent = p.nom;
+  $("fiche").innerHTML = `
+    <div class="visu">${p.svg}</div>
+    <div>
+      <div class="cat">${e.nom} · ${p.cat}</div>
+      <h2>${p.nom}</h2>
+      <p class="desc">${p.desc}</p>
+      <dl>
+        <div class="spec"><dt>Matière</dt><dd>${p.matiere}</dd></div>
+        <div class="spec"><dt>Entretien</dt><dd>${p.entretien}</dd></div>
+        <div class="spec"><dt>Marquage</dt><dd>Logo / mentions ${e.nom} inclus</dd></div>
+      </dl>
+      <div class="choix">
+        <div class="lab">Taille <span class="val" id="val-taille">${selTaille??""}</span></div>
+        <div class="tailles-grp" id="grp-tailles">
+          ${p.tailles.map(t=>`<button class="t-btn ${t===selTaille?'actif':''}" onclick="choisirTaille('${t}',this)">${t}</button>`).join("")}
+        </div>
+      </div>
+      <div class="choix">
+        <div class="lab">Quantité</div>
+        <div class="qte">
+          <button onclick="changerQte(-1)" aria-label="Diminuer">−</button>
+          <input id="inp-qte" type="number" min="1" max="20" value="1" onchange="majQte(this)">
+          <button onclick="changerQte(1)" aria-label="Augmenter">+</button>
+        </div>
+      </div>
+      <button class="btn-add" onclick="ajouterPanier()">Ajouter au panier</button>
+      <div class="alerte-taille" id="alerte"></div>
+      <div id="zone-ok"></div>
+    </div>`;
+  aller("produit");
+}
+function choisirTaille(t, btn){
+  selTaille = t;
+  document.querySelectorAll("#grp-tailles .t-btn").forEach(b=>b.classList.remove("actif"));
+  btn.classList.add("actif");
+  $("val-taille").textContent = t;
+  $("alerte").textContent = "";
+}
+function changerQte(d){
+  selQte = Math.min(20, Math.max(1, selQte + d));
+  $("inp-qte").value = selQte;
+}
+function majQte(inp){
+  selQte = Math.min(20, Math.max(1, parseInt(inp.value)||1));
+  inp.value = selQte;
+}
+function ajouterPanier(){
+  if(!selTaille){ $("alerte").textContent = "Veuillez sélectionner une taille."; return; }
+  const existant = panier.find(l => l.pid===produitActif.id && l.taille===selTaille);
+  if(existant){ existant.qte = Math.min(20, existant.qte + selQte); }
+  else {
+    panier.push({pid:produitActif.id, entite:entiteActive, nom:produitActif.nom, taille:selTaille, qte:selQte, svg:produitActif.svg});
+  }
+  majBadge();
+  $("zone-ok").innerHTML = `<div class="ajoute-ok">
+    <span>✓ ${produitActif.nom} (${selTaille}) ×${selQte} ajouté au panier.</span>
+    <a onclick="aller('panier')">Voir le panier</a>
+  </div>`;
+}
+function majBadge(){
+  $("badge").textContent = panier.reduce((s,l)=>s+l.qte,0);
+}
+
+/* ============================================================
+   PANIER + FORMULAIRE
+   ============================================================ */
+function rendrePanier(){
+  const tot = panier.reduce((s,l)=>s+l.qte,0);
+  $("panier-nb").textContent = tot ? tot + " article" + (tot>1?"s":"") : "";
+  if(!panier.length){
+    $("panier-contenu").innerHTML = `<div class="panier-vide">
+      <div class="p-icone">🛒</div>
+      <p>Votre panier est vide.</p>
+      <p style="margin-top:16px"><button class="btn-ghost" onclick="aller('accueil')">Choisir une entité</button></p>
+    </div>`;
+    return;
+  }
+  $("panier-contenu").innerHTML = `
+  <div class="panier-wrap">
+    <div class="lignes">
+      ${panier.map((l,i)=>`
+      <div class="ligne">
+        <div class="mini">${l.svg}</div>
+        <div>
+          <div class="nom">${l.nom}</div>
+          <div class="detail">${ENTITES[l.entite].nom} · Taille ${l.taille}</div>
+        </div>
+        <div class="actions">
+          <div class="qte">
+            <button onclick="qteLigne(${i},-1)" aria-label="Diminuer">−</button>
+            <input type="number" min="1" max="20" value="${l.qte}" onchange="qteLigneInput(${i},this)">
+            <button onclick="qteLigne(${i},1)" aria-label="Augmenter">+</button>
+          </div>
+          <button class="suppr" onclick="supprLigne(${i})">Retirer</button>
+        </div>
+      </div>`).join("")}
+    </div>
+    <form class="recap" onsubmit="validerCommande(event)">
+      <h3>Informations complémentaires</h3>
+      <p class="note">Ces informations permettent de préparer et livrer votre dotation. Les champs marqués <span style="color:var(--rouge)">*</span> sont obligatoires.</p>
+      <div class="deux-cols">
+        <div class="champ"><label>Nom <span class="req">*</span></label><input id="f-nom" required></div>
+        <div class="champ"><label>Prénom <span class="req">*</span></label><input id="f-prenom" required></div>
+      </div>
+      <div class="champ"><label>Entité <span class="req">*</span></label>
+        <select id="f-entite" required>
+          <option value="">— Sélectionner —</option>
+          <option>Q-Park</option>
+          <option>Q-Park Voirie</option>
+        </select>
+      </div>
+      <div class="champ"><label>Site / Ville d'affectation <span class="req">*</span></label><input id="f-site" placeholder="Ex. : Parc Hôtel de Ville — Paris" required></div>
+      <div class="deux-cols">
+        <div class="champ"><label>E-mail <span class="req">*</span></label><input id="f-email" type="email" required></div>
+        <div class="champ"><label>Téléphone</label><input id="f-tel" type="tel" placeholder="06 00 00 00 00"></div>
+      </div>
+      <div class="champ"><label>Matricule / N° agent</label><input id="f-matricule"></div>
+      <div class="champ"><label>Commentaire</label><textarea id="f-comm" placeholder="Précisions sur la livraison, les tailles, etc."></textarea></div>
+      <button type="submit" class="btn-valider">Valider ma commande</button>
+      <div class="err-form" id="err-form"></div>
+    </form>
+  </div>`;
+}
+function qteLigne(i,d){ panier[i].qte = Math.min(20, Math.max(1, panier[i].qte+d)); majBadge(); rendrePanier(); }
+function qteLigneInput(i,inp){ panier[i].qte = Math.min(20, Math.max(1, parseInt(inp.value)||1)); majBadge(); rendrePanier(); }
+function supprLigne(i){ panier.splice(i,1); majBadge(); rendrePanier(); }
+
+function validerCommande(ev){
+  ev.preventDefault();
+  const f = {
+    nom:$("f-nom").value.trim(), prenom:$("f-prenom").value.trim(),
+    entite:$("f-entite").value, site:$("f-site").value.trim(),
+    email:$("f-email").value.trim(), tel:$("f-tel").value.trim(),
+    matricule:$("f-matricule").value.trim(), comm:$("f-comm").value.trim()
+  };
+  if(!f.nom||!f.prenom||!f.entite||!f.site||!f.email){
+    $("err-form").textContent = "Merci de renseigner tous les champs obligatoires.";
+    return;
+  }
+  const ref = "QP-" + new Date().getFullYear() + "-" + String(Math.floor(Math.random()*90000)+10000);
+  const lignes = panier.map(l=>`<div class="rf-ligne"><span>${l.nom} — Taille ${l.taille}</span><span>×${l.qte}</span></div>`).join("");
+  $("confirm-bloc").innerHTML = `
+    <div class="coche">✓</div>
+    <h2>Commande envoyée</h2>
+    <p>Merci ${f.prenom} ${f.nom}. Votre demande de dotation a bien été enregistrée et sera traitée par votre responsable.</p>
+    <div class="ref">Référence : ${ref}</div>
+    <div class="recap-final">
+      <h4>Récapitulatif</h4>
+      ${lignes}
+      <div class="rf-ligne" style="margin-top:10px"><span>Entité</span><span>${f.entite}</span></div>
+      <div class="rf-ligne"><span>Site</span><span>${f.site}</span></div>
+      <div class="rf-ligne"><span>Contact</span><span>${f.email}${f.tel? " · "+f.tel : ""}</span></div>
+      ${f.matricule?`<div class="rf-ligne"><span>Matricule</span><span>${f.matricule}</span></div>`:""}
+      ${f.comm?`<div class="rf-ligne"><span>Commentaire</span><span>${f.comm}</span></div>`:""}
+    </div>
+    <button class="btn-ghost" onclick="reinitialiser()">Retour à l'accueil</button>`;
+  panier = []; majBadge();
+  aller("confirm");
+}
+function reinitialiser(){ entiteActive=null; $("ctx-entite").textContent="Dotation textile"; aller("accueil"); }
+</script>
+</body>
+</html>
